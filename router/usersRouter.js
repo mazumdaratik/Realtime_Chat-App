@@ -1,17 +1,35 @@
-//external imports 
-const express = require('express');
-const decorateHtmlResponse = require('../middlewares/common/decorateHtmlResponse')
-const {check} = require('express-validator')
-//internal imports
-const {getUsers} = require('../controller/usersController');
-const avatarUpload = require('../middlewares/users/avatarUpload');
+// external imports
+const express = require("express");
+const { check } = require("express-validator");
 
-const router = express.Router();
+// internal imports
+const {
+  getUsers,
+  addUsers,
+  removeUser,
+} = require("../controller/usersController");
+ const decorateHtmlResponse = require("../middlewares/common/decorateHtmlResponse");
+ const avatarUpload = require("../middlewares/users/avatarUpload");
+ const {
+  addUserValidators,
+  addUserValidationHandler,
+} = require("../middlewares/users/usersValidator");
 
-//users page
-router.get("/", decorateHtmlResponse("Users"), getUsers);
+ const router = express.Router();
 
-//add usesrs
-router.post("/", avatarUpload);
+// users page
+ router.get("/", decorateHtmlResponse("Users"), getUsers);
+
+// add user
+ router.post(
+  "/",
+  avatarUpload,
+  addUserValidators,
+  addUserValidationHandler,
+  addUsers
+);
+
+// remove user
+router.delete("/:id", removeUser);
 
 module.exports = router;
